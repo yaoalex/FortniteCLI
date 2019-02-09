@@ -1,2 +1,2 @@
 # FortniteCLI
-command line interface to get and analyze fortnite stats
+command line interface to analyze fortnite stats
