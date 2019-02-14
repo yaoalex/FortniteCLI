@@ -6,6 +6,6 @@ import (
 
 // RootCmd creates a new cobra command
 var RootCmd = &cobra.Command{
-	Use:   "FortniteCLI",
-	Short: "FortniteCLI is a command line interface to track your Fortnite stats",
+	Use:   "fortnitecli",
+	Short: "FortniteCLI is a command line interface for tracking your Fortnite stats",
 }
