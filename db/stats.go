@@ -14,7 +14,7 @@ var db *bolt.DB
 type Stat struct {
 	Key    int
 	Player string
-	Added  string
+	Added  int
 	Note   string
 	Value  map[string]interface{}
 }
@@ -35,14 +35,14 @@ func CreateStat(player, note string, stats map[string]interface{}) error {
 	var id int
 	err := db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(statsBucket)
-		id64, _ := b.NextSequence()
+		id64, err := b.NextSequence()
+		if err != nil {
+			return err
+		}
 		id = int(id64)
 		key := itob(id)
-		row := make([]interface{}, 3)
-		row[0] = player
-		row[1] = note
-		row[2] = stats
-		encoded, errtwo := json.Marshal(row)
+		stat := Stat{Key: id, Player: player, Note: note, Added: int(time.Now().Unix()), Value: stats["stats"].(map[string]interface{})}
+		encoded, errtwo := json.Marshal(stat)
 		if errtwo != nil {
 			return errtwo
 		}
@@ -52,6 +52,24 @@ func CreateStat(player, note string, stats map[string]interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func AllStats() ([]Stat, error) {
+	var stats []Stat
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(statsBucket)
+		c := b.Cursor()
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			var stat Stat
+			json.Unmarshal(v, &stat)
+			stats = append(stats, stat)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return stats, nil
 }
 
 func itob(v int) []byte {
