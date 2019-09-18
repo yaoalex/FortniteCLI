@@ -1,11 +1,7 @@
 # FortniteCLI
-command line interface to analyze fortnite stats
+command line interface to analyze fortnite stats using Cobra and BoltDB
 
 `go get -u github.com/yaoalex/FortniteCLI`
-
-required packages:
-`go get -u "github.com/boltdb/bolt"`
-`go get -u ""github.com/spf13/cobra"`
 
 `fortnitecli stats <username> --save <note>`
 the stats command gets your current fortnite stats and gives you the option of saving the stats into boltDB with a side note
